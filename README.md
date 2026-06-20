@@ -123,7 +123,22 @@ Implementar testes de unidade capazes de atender aos critérios de `code line co
 
 ### Resultado
 
-[Insira o resultado aqui]
+Foram feitas apenas as refatorações mínimas necessárias para testabilidade e estabilidade:
+
+- adição da dependência `spring-security-test` no `pom.xml`;
+- correção da expressão de expiração em `JwtService` usando literal `long`;
+- troca de `field injection` por `constructor injection` em `DashboardService`.
+
+Também foi criada uma nova suíte de testes cobrindo os principais fluxos de autenticação JWT, permissões, cadastro, avaliações, dashboard, perguntas, funcionários, mapeamentos de DTOs e controllers.
+
+Os testes foram executados localmente com `mvn test` e o relatório de cobertura foi gerado com `mvn test jacoco:report`.
+
+Resultado consolidado no JaCoCo:
+
+- `Line coverage`: `99.61%` (`1029/1033`);
+- `Branch coverage`: `98.16%` (`320/326`).
+
+O objetivo de cobertura de linhas foi superado com ampla margem. A cobertura de branches ficou muito próxima do alvo máximo, restando apenas 6 branches não cobertos, todos concentrados na classe `AvaliacaoService`.
 
 ---
 
