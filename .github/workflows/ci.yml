@@ -54,7 +54,6 @@ jobs:
           done
           echo "PostgreSQL did not become ready in time."
           exit 1
-
       - name: Run unit tests and generate JaCoCo report
         run: mvn -B clean test jacoco:report
 
@@ -105,7 +104,6 @@ jobs:
             find "$GITHUB_WORKSPACE/CaramelStray/.artifacts" -maxdepth 5 -type f -print || true
             exit 1
           fi
-
       - name: Compile project for SonarCloud
         run: mvn -B -DskipTests compile
 
@@ -117,11 +115,29 @@ jobs:
           -DskipTests
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-
   system-test:
     name: system-test
     runs-on: ubuntu-latest
     needs: static-analysis
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: caramel_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U test -d caramel_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/caramel_test
+      SPRING_DATASOURCE_USERNAME: test
+      SPRING_DATASOURCE_PASSWORD: test
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     defaults:
       run:
         working-directory: CaramelStray
@@ -135,6 +151,19 @@ jobs:
           distribution: temurin
           java-version: "17"
           cache: maven
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..30}; do
+            pg_isready -h localhost -p 5432 -U test -d caramel_test && exit 0
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+          echo "PostgreSQL did not become ready in time."
+          exit 1
 
       - name: Run E2E system tests
         run: mvn -B test-compile failsafe:integration-test failsafe:verify
