@@ -18,27 +18,45 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("e2e")
 @Import(E2eFixtureLoader.class)
-@Testcontainers(disabledWithoutDocker = true)
 public abstract class BaseApiE2ETest {
 
-    @Container
-    @SuppressWarnings("resource")
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine")
-            .withDatabaseName("caramelstray_e2e")
-            .withUsername("test")
-            .withPassword("test");
+    private static PostgreSQLContainer<?> postgres;
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
+        if (hasExternalDatasourceConfiguration()) {
+            return;
+        }
+
+        PostgreSQLContainer<?> container = getOrStartPostgres();
+        registry.add("spring.datasource.url", container::getJdbcUrl);
+        registry.add("spring.datasource.username", container::getUsername);
+        registry.add("spring.datasource.password", container::getPassword);
+    }
+
+    private static boolean hasExternalDatasourceConfiguration() {
+        return hasText(System.getenv("SPRING_DATASOURCE_URL"))
+                || hasText(System.getProperty("spring.datasource.url"));
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
+    }
+
+    @SuppressWarnings("resource")
+    private static synchronized PostgreSQLContainer<?> getOrStartPostgres() {
+        if (postgres == null) {
+            postgres = new PostgreSQLContainer<>("postgres:16-alpine")
+                    .withDatabaseName("caramelstray_e2e")
+                    .withUsername("test")
+                    .withPassword("test");
+            postgres.start();
+        }
+        return postgres;
     }
 
     @LocalServerPort
