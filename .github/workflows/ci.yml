@@ -95,10 +95,15 @@ jobs:
       - name: Restore JaCoCo report path
         shell: bash
         run: |
-          mkdir -p target/site
-          if [ -f .artifacts/unit-test/jacoco.xml ]; then
-            mkdir -p target/site/jacoco
-            cp .artifacts/unit-test/jacoco.xml target/site/jacoco/jacoco.xml
+          mkdir -p target/site/jacoco
+          JACOCO=$(find "$GITHUB_WORKSPACE/CaramelStray/.artifacts" -type f -name jacoco.xml -print -quit 2>/dev/null || true)
+          if [ -n "$JACOCO" ]; then
+            cp "$JACOCO" target/site/jacoco/jacoco.xml
+            echo "Copied jacoco report from $JACOCO"
+          else
+            echo "No jacoco.xml found in downloaded artifacts. Listing files for debugging:"
+            find "$GITHUB_WORKSPACE/CaramelStray/.artifacts" -maxdepth 5 -type f -print || true
+            exit 1
           fi
 
       - name: Compile project for SonarCloud
