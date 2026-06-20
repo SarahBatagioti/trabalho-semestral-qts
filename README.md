@@ -228,19 +228,42 @@ Criar uma pipeline com GitHub Actions ou GitLab CI que contemple os stages obrig
 
 ### Resultado
 
-[Insira o resultado aqui]
+Foi criado um workflow de CI no `GitHub Actions` para o projeto `CaramelStray`, implementado em [`.github/workflows/ci.yml`](./.github/workflows/ci.yml), contendo os três stages obrigatórios exigidos: `unit-test`, `static-analysis` e `system-test`.
 
----
+A workflow foi configurada para disparar automaticamente em eventos de `push`, `pull_request` e `workflow_dispatch`, estabelecendo uma dependência explícita e sequencial entre os jobs (`unit-test` → `static-analysis` → `system-test`), além de realizar a publicação de artefatos de relatório para fins de evidência.
 
-## 6. Apresentação dos Resultados
+<details>
+<summary><b>Stage 1: Testes de Unidade (unit-test)</b></summary>
+<p>
 
-### Sobre o objetivo
+Neste stage, a pipeline executa apenas os testes de unidade por meio do comando `mvn -B clean test jacoco:report`, gerando o arquivo `target/site/jacoco/jacoco.xml` que posteriormente é consumido pelo SonarCloud. Para garantir o isolamento estrito desse comportamento, o `maven-surefire-plugin` foi configurado para excluir a suíte E2E por padrão, desconsiderando classes que correspondam a `**/*E2ETest.java` e todo o pacote `**/e2e/**`.
 
-Apresentar ao professor os resultados finais do trabalho, demonstrando a evolução do projeto em relação aos critérios da atividade e ao Quality Gate esperado.
+</p>
+</details>
 
-### Resultado
+<details>
+<summary><b>Stage 2: Análise Estática com SonarCloud (static-analysis)</b></summary>
+<p>
 
-[Insira o resultado aqui]
+Neste stage, o workflow recompila o projeto sem reexecutar os testes e publica a análise diretamente no SonarCloud com o comando `mvn -B -DskipTests -Dsonar.qualitygate.wait=true org.sonarsource.scanner.maven:sonar-maven-plugin:sonar`. A etapa reaproveita as propriedades `sonar.projectKey`, `sonar.organization`, `sonar.host.url` e `sonar.coverage.jacoco.xmlReportPaths` já mapeadas no `pom.xml`. O token de autenticação esperado para essa comunicação é fornecido de forma segura via o secret `SONAR_TOKEN` do GitHub.
+
+</p>
+</details>
+
+<details>
+<summary><b>Stage 3: Testes de Sistema E2E (system-test)</b></summary>
+<p>
+
+No último stage, a pipeline executa exclusivamente os testes automatizados de sistema através do comando `mvn -B failsafe:integration-test failsafe:verify`. Essa separação e execução isolada foram viabilizadas pelo `maven-failsafe-plugin`, configurado para incluir unicamente as classes `*E2ETest`, preservando a integridade dos cenários de teste ponta a ponta construídos com `REST-assured` e `Testcontainers`.
+
+</p>
+</details>
+
+<br>
+
+As capturas de tela solicitadas para a apresentação do projeto estão armazenadas e estruturadas em [assets/Objetivo 5/README.md](./assets/Objetivo%205/README.md), que documenta formalmente os arquivos esperados para esta entrega.
+
+**Observação importante:** A pipeline passa a refletir fielmente as regras do `Quality Gate` do SonarCloud. Sendo assim, caso a cobertura de branches permaneça abaixo de `100%`, o job `static-analysis` falhará de forma correta e esperada, evidenciando que a infraestrutura de integração contínua está pronta e operacional, enquanto o critério acadêmico aguarda a completa cobertura do gap restante nos testes.
 
 ---
 
