@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["avaliacaoFuncionarioCodigo", "tituloAvaliacao", "perguntas"],
+  "properties": {
+    "avaliacaoFuncionarioCodigo": { "type": "integer" },
+    "tituloAvaliacao": { "type": "string" },
+    "dataPrazo": { "type": ["string", "null"] },
+    "perguntas": { "type": "array" }
+  },
+  "additionalProperties": true
+}

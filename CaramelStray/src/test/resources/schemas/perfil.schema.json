@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["codigo", "nome"],
+  "properties": {
+    "codigo": { "type": "integer" },
+    "nome": { "type": "string" },
+    "descricao": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}

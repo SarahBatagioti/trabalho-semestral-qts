@@ -156,7 +156,63 @@ Implementar testes de sistema (E2E) para as REST APIs do projeto, incluindo aute
 
 ### Resultado
 
-[Insira o resultado aqui]
+Foi implementada uma suíte de testes de sistema (E2E) em nível de API utilizando `REST-assured`, executando a aplicação completa com `@SpringBootTest` e banco `PostgreSQL` isolado via `Testcontainers`. Com essa abordagem, os testes passaram a rodar de forma independente do banco local do desenvolvedor, com massa de dados determinística, ambiente reproduzível e foco direto nos contratos reais expostos pelas REST APIs.
+
+<details>
+<summary><b>1. Infraestrutura de Testes e Dependências Adicionadas</b></summary>
+<p>
+
+Para sustentar essa estratégia, foram adicionadas ao projeto as dependências de `REST-assured`, `json-schema-validator`, `Testcontainers` e `spring-boot-testcontainers`, além de um perfil específico de teste E2E. Também foi criada uma infraestrutura compartilhada para os testes, contendo:
+
+- Classe base de integração com porta aleatória;
+- Configuração centralizada do `REST-assured`;
+- Inicialização automática do container PostgreSQL;
+- Carregamento de fixtures controladas antes de cada execução;
+- Utilitários de autenticação para reaproveitamento de tokens por perfil.
+
+Para estabilizar a execução E2E, também foram feitos pequenos ajustes de suporte na aplicação, restritos à testabilidade e previsibilidade das respostas HTTP, como o tratamento centralizado de exceções e a padronização do retorno de `401` e `403` nos cenários de autenticação e autorização.
+
+</p>
+</details>
+
+<details>
+<summary><b>2. Cenários de Teste e Fluxos Funcionais Cobertos</b></summary>
+<p>
+
+A suíte de testes E2E cobriu os principais fluxos, caminhos alternativos e cenários de exceção de todas as APIs atualmente expostas pelo projeto, sendo estruturada e organizada por domínio funcional:
+
+* **Autenticação e Cadastro:** Valida `login` com credenciais válidas/inválidas, cadastro de novo usuário, rejeição de e-mail duplicado ou relacionamentos inválidos, e comportamento do endpoint `me` com e sem autenticação.
+* **Cadastros Base (`área`, `perfil`, `competência` e `pergunta`):** Valida criação, listagem, consulta, atualização e exclusão, além de tratar erros como acesso sem token (`401`), duplicidade em competências (`400`), recursos inexistentes (`404`) e criação sem permissão (`403`).
+* **Endpoints de Funcionários:** Cobre listagem geral e filtrada, consulta e atualização do próprio perfil, criação/remoção por administrador, gestão de certificados, associação de competências, cadastro/edição de experiências e validação de regras de autorização por papel e área.
+* **Endpoints de Avaliações:** Cobre o fluxo ponta a ponta mais importante do sistema, incluindo criação de avaliações por perfis autorizados, listagem por área/papel, visualização detalhada, pendências do colaborador, gravação/atualização de respostas, finalização do fluxo, revisão do supervisor e consulta de históricos.
+* **Cenários de Exceção em Avaliações:** Testes específicos para tentativa de avaliar colaborador fora da área permitida, responder avaliação de outro usuário, inconsistência entre pergunta/opção, dupla finalização retornando conflito e validação de acessos sem autenticação ou autorização adequada.
+
+</p>
+</details>
+
+<details>
+<summary><b>3. Massa de Dados e Critérios Estritos de Validação</b></summary>
+<p>
+
+A massa de dados de teste foi preparada de forma fixa e previsível, contemplando:
+- `2 áreas`;
+- `3 perfis funcionais` (`diretoria/admin`, `supervisão/gestor` e `colaborador`);
+- Usuários distribuídos em áreas diferentes;
+- Competências, perguntas, opções de resposta, certificados e experiências;
+- Instâncias de avaliação em estados distintos (`PENDENTE`, `AGUARDANDO_REVISAO` e `APROVADO`).
+
+Além do `response code`, todos os testes de sucesso validam de forma estrita:
+- `JSON Schema` das respostas;
+- Presença e formato dos campos esperados;
+- Valores retornados em conformidade com a massa de dados controlada;
+- Efeitos persistidos após operações de escrita, sempre que aplicável.
+
+</p>
+</details>
+
+<br>
+
+Os testes foram executados localmente com `mvn test`, com sucesso, confirmando que a suíte E2E está funcional e pronta para reaproveitamento futuro na stage `system-test` da pipeline de CI.
 
 ---
 

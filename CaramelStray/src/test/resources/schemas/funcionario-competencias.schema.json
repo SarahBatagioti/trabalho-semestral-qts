@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["competencias"],
+  "properties": {
+    "competencias": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "nome"],
+        "properties": {
+          "id": { "type": "integer" },
+          "nome": { "type": "string" },
+          "categoria": { "type": ["string", "null"] }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

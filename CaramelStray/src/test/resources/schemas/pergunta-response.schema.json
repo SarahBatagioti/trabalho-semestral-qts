@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["codigo", "pergunta"],
+  "properties": {
+    "codigo": { "type": "integer" },
+    "pergunta": { "type": "string" },
+    "competenciaCodigo": { "type": ["integer", "null"] },
+    "competenciaNome": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}

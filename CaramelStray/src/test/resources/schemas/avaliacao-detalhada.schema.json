@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["codigo", "titulo", "status", "perguntas", "instancias"],
+  "properties": {
+    "codigo": { "type": "integer" },
+    "titulo": { "type": "string" },
+    "status": { "type": ["string", "null"] },
+    "dataCriacao": { "type": ["string", "null"] },
+    "dataPrazo": { "type": ["string", "null"] },
+    "nomeCriador": { "type": ["string", "null"] },
+    "perguntas": { "type": "array" },
+    "instancias": { "type": "array" }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["codigo", "cargo", "empresa"],
+  "properties": {
+    "codigo": { "type": "integer" },
+    "cargo": { "type": "string" },
+    "empresa": { "type": "string" },
+    "descricao": { "type": ["string", "null"] },
+    "dataInicio": { "type": ["string", "null"] },
+    "dataFim": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}

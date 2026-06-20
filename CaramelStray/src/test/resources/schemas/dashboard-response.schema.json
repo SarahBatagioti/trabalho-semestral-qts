@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "totalColaboradores",
+    "avaliacoesConcluidasMes",
+    "metaMensal",
+    "totalPendencias",
+    "evolucaoMensal",
+    "totalColaboradoresCompetencia",
+    "totalColaboradoresArea",
+    "top5CompetenciasMaisAvaliadas"
+  ],
+  "properties": {
+    "totalColaboradores": { "type": "integer" },
+    "avaliacoesConcluidasMes": { "type": "integer" },
+    "metaMensal": { "type": "number" },
+    "totalPendencias": { "type": "integer" },
+    "evolucaoMensal": { "type": "array" },
+    "totalColaboradoresCompetencia": { "type": "array" },
+    "totalColaboradoresArea": { "type": "array" },
+    "top5CompetenciasMaisAvaliadas": { "type": "array" }
+  },
+  "additionalProperties": true
+}

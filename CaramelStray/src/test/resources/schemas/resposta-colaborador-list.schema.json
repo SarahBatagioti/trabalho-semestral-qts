@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["codigo", "funcionarioAvaliacaoCodigo", "perguntaCodigo"],
+    "properties": {
+      "codigo": { "type": "integer" },
+      "funcionarioAvaliacaoCodigo": { "type": "integer" },
+      "perguntaCodigo": { "type": "integer" },
+      "respostaTexto": { "type": ["string", "null"] },
+      "opcaoSelecionadaCodigo": { "type": ["integer", "null"] }
+    },
+    "additionalProperties": true
+  }
+}

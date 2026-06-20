@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["token", "userId", "nomeCompleto"],
+  "properties": {
+    "token": { "type": "string", "minLength": 1 },
+    "userId": { "type": "integer" },
+    "nomeCompleto": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": true
+}

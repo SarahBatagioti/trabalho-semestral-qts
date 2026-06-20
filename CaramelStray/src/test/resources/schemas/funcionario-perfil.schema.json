@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["codigo", "nomeCompleto", "email", "competencias", "certificados"],
+  "properties": {
+    "codigo": { "type": "integer" },
+    "nomeCompleto": { "type": "string" },
+    "email": { "type": "string" },
+    "telefone": { "type": ["string", "null"] },
+    "dataCadastro": { "type": ["string", "null"] },
+    "tituloProfissional": { "type": ["string", "null"] },
+    "resumo": { "type": ["string", "null"] },
+    "localizacao": { "type": ["string", "null"] },
+    "nomeArea": { "type": ["string", "null"] },
+    "nomeGestor": { "type": ["string", "null"] },
+    "competencias": { "type": "array" },
+    "certificados": { "type": "array" }
+  },
+  "additionalProperties": true
+}

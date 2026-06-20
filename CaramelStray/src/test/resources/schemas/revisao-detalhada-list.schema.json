@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["perguntaTexto", "perguntaId"],
+    "properties": {
+      "perguntaTexto": { "type": "string" },
+      "respostaDada": { "type": ["string", "null"] },
+      "opcaoSelecionadaId": { "type": ["integer", "null"] },
+      "perguntaId": { "type": "integer" }
+    },
+    "additionalProperties": true
+  }
+}
