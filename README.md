@@ -1,138 +1,140 @@
-# Trabalho Semestral QTS - Back-end Derivado
+# Relatório da Atividade Semestral
 
-## Sobre a atividade
+## Introdução
 
-Este repositório foi preparado com base na atividade da disciplina, cujo enunciado determina:
+Este documento organiza a entrega do projeto conforme os requisitos descritos na atividade da disciplina. A estrutura abaixo foi dividida em 6 seções principais, espelhando exatamente os 6 objetivos solicitados no enunciado, para facilitar o preenchimento, a revisão e a apresentação final.
 
-- derivar um repositório isolando o projeto back-end contido na pasta `CaramelStray`;
-- manter a estrutura base funcional do projeto original para as implementacoes complementares;
-- evoluir o projeto com testes, analise estatica, cobertura e pipeline de CI.
+O projeto base adotado para a atividade deriva do back-end contido em `CaramelStray`, mantendo a stack e a estrutura original exigidas no enunciado.
 
-Assim, este repositório passa a considerar apenas o escopo do back-end da aplicacao.
+---
 
-## O que foi feito neste repositório
+## 1. Análise Estática no SonarCloud
 
-Considerando a descricao da atividade, a organizacao adotada para este repositório e a seguinte:
+### Sobre o objetivo
 
-- isolamento do projeto back-end originalmente contido na pasta `CaramelStray`;
-- remocao dos artefatos e diretorios que nao fazem parte do escopo do back-end;
-- atualizacao da documentacao para refletir o novo objetivo do repositório;
-- preservacao da stack e da estrutura base do projeto Spring Boot fornecido no projeto original.
+Processar a análise estática do projeto na ferramenta SonarCloud, registrando o resultado inicial e configurando a inferência da cobertura de linhas de código por testes de unidade, em conformidade com os critérios definidos no item 6 da atividade.
 
-## Objetivo desta entrega
+### Resultado
 
-O foco deste repositório e servir como base para a continuidade da atividade avaliativa, incluindo:
+No resultado inicial, o projeto ainda aparece com `Quality Gate: Not computed`, indicando que a análise foi registrada, mas que os critérios consolidados do portão de qualidade ainda não haviam sido completamente avaliados na execução observada. Em relação às métricas gerais, foram identificados `154 issues abertas`, `5,4% de cobertura de código` e `0,0% de duplicação`.
 
-- implementacao de testes de unidade;
-- implementacao de testes de sistema (E2E) para as REST APIs;
-- medicao de cobertura de codigo;
-- integracao com SonarCloud;
-- criacao de pipeline de CI com os stages `unit-test`, `static-analysis` e `system-test`.
+Na visão por atributos de qualidade, o projeto apresentou:
+- `Security Rating: D`, com `9 security issues` abertas;
+- `Reliability Rating: B`, com `8 reliability issues` abertas;
+- `Maintainability Rating: A`, com `144 maintainability issues` abertas;
+- `Security Hotspots: 0`, com `Security Review Rating: A`.
 
-## Stack do projeto
+Na visão arquitetural, a ferramenta apontou indícios de problemas estruturais que também devem ser considerados na evolução do projeto:
+- `2 tangles`;
+- `1 oversized component`;
+- `7 split responsibilities`;
+- arquitetura pretendida ainda não definida no dashboard.
 
-O back-end foi mantido na stack definida pela base original do projeto:
+Na listagem de issues, os apontamentos iniciais ficaram distribuídos em:
+- `1 bug`;
+- `9 vulnerabilities`;
+- `144 code smells`.
 
-- Java 17+
-- Spring Boot
-- Maven
-- PostgreSQL
-- Spring Security
-- JPA / Hibernate
-- JWT
+Quanto à severidade, os registros exibidos no dashboard foram:
+- `0 blocker`;
+- `17 critical`;
+- `37 major`;
+- `95 minor`;
+- `5 info`.
 
-## Estrutura atual
+Esses resultados mostram que o projeto já possui uma base funcional, mas ainda está distante dos critérios definidos no item 6 da atividade, principalmente em cobertura de testes e quantidade de issues abertas. Assim, este diagnóstico inicial servirá como marco comparativo para medir a evolução obtida com a implementação dos testes de unidade, testes de sistema, correções de código e integração contínua.
 
-O codigo-fonte do back-end esta na pasta:
+Evidências utilizadas nesta etapa:
+- Dashboard `Overview` do SonarQube Cloud;
+- painel `Summary`;
+- listagem de `Issues`;
+- painel `Architecture`.
 
-```text
-CaramelStray/
-```
+Pode verificar sobre o resultados em [Evidências do Objetivo 1](./assets/Objetivo%201/)
 
-Arquivos importantes:
+---
 
-- `CaramelStray/pom.xml`
-- `CaramelStray/src/main/java`
-- `CaramelStray/src/main/resources/application.properties`
-- `CaramelStray/src/test/java`
+## 2. Estratégia Evolutiva para Atender ao Quality Gate
 
-## Como executar o projeto
+### Sobre o objetivo
 
-### Pre-requisitos
+Definir uma estratégia evolutiva para que o projeto atenda integralmente ao Quality Gate da atividade, incluindo o tratamento de apontamentos identificados pelo SonarCloud, como `bugs`, `vulnerabilities`, `security hotspots`, `code smells`, duplicidade de código e demais issues relevantes.
 
-Antes de executar, tenha instalado:
+### Resultado
 
-- Java 17 ou superior
-- PostgreSQL
+[Insira o resultado aqui]
 
-O projeto inclui Maven Wrapper, entao nao e obrigatorio ter o Maven instalado globalmente.
+---
 
-### Configuracao do banco de dados
+## 3. Testes de Unidade
 
-Atualmente o arquivo `CaramelStray/src/main/resources/application.properties` esta configurado com:
+### Sobre o objetivo
 
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/alltallent
-spring.datasource.username=postgres
-spring.datasource.password=1234
-spring.jpa.hibernate.ddl-auto=update
-```
+Implementar testes de unidade capazes de atender aos critérios de `code line coverage` e `branch coverage` definidos no Quality Gate do item 6.
 
-Antes de subir a aplicacao:
+### Resultado
 
-1. crie um banco PostgreSQL chamado `alltallent`;
-2. confirme usuario e senha do PostgreSQL;
-3. ajuste o arquivo `application.properties` caso sua configuracao local seja diferente.
+[Insira o resultado aqui]
 
-### Executando com Maven Wrapper
+---
 
-No Windows:
+## 4. Testes de Sistema (E2E) para as REST APIs
 
-```powershell
-cd CaramelStray
-.\mvnw.cmd spring-boot:run
-```
+### Sobre o objetivo
 
-No Linux/macOS:
+Implementar testes de sistema (E2E) para as REST APIs do projeto, incluindo autenticação, de forma que:
 
-```bash
-cd CaramelStray
-./mvnw spring-boot:run
-```
+- cubram os fluxos principais;
+- cubram os fluxos alternativos;
+- cubram os fluxos de exceção;
+- sejam implementados com `REST-assured`;
+- validem, no mínimo, `response code`, `JSON Schema` e os valores retornados esperados.
 
-### Executando os testes
+### Resultado
 
-No Windows:
+[Insira o resultado aqui]
 
-```powershell
-cd CaramelStray
-.\mvnw.cmd test
-```
+---
 
-No Linux/macOS:
+## 5. Pipeline de CI
 
-```bash
-cd CaramelStray
-./mvnw test
-```
+### Sobre o objetivo
 
-## API
+Criar uma pipeline com GitHub Actions ou GitLab CI que contemple os stages obrigatórios da atividade:
 
-A aplicacao expoe endpoints REST relacionados a autenticacao, funcionarios, perfis, competencias, areas, perguntas, avaliacoes e dashboard.
+- `unit-test`: execução dos testes de unidade e geração do arquivo de cobertura consumido pelo SonarCloud;
+- `static-analysis`: processamento da análise estática e publicação dos resultados no SonarCloud, incluindo `line coverage` e `branch coverage`;
+- `system-test`: execução dos testes automatizados de sistema (E2E) em nível de API, cobrindo os cenários implementados.
 
-Alguns prefixos identificados no projeto:
+### Resultado
 
-- `/api/auth`
-- `/api/funcionario`
-- `/api/perfil`
-- `/api/competencia`
-- `/api/area`
-- `/api/perguntas`
-- `/api/avaliacoes`
-- `/api/dashboard`
+[Insira o resultado aqui]
 
-## Observacoes
+---
 
-- a estrutura base do back-end foi mantida, conforme exigido no enunciado;
-- este repositório esta direcionado apenas ao desenvolvimento e evolucao do back-end;
-- as proximas etapas da atividade incluem testes automatizados, cobertura, SonarCloud e pipeline de integracao continua.
+## 6. Apresentação dos Resultados
+
+### Sobre o objetivo
+
+Apresentar ao professor os resultados finais do trabalho, demonstrando a evolução do projeto em relação aos critérios da atividade e ao Quality Gate esperado.
+
+### Resultado
+
+[Insira o resultado aqui]
+
+---
+
+## Quality Gate Esperado
+
+Para referência durante o preenchimento deste relatório, os critérios definidos no enunciado são:
+
+| Item | Critério |
+| --- | --- |
+| Code line coverage | > 75% |
+| Code branch coverage | == 100% |
+| Bugs | == 0 |
+| Vulnerabilities | == 0 |
+| Duplicidade | < 5% |
+| Issues - Blocker | == 0 |
+| Issues - Critical | == 0 |
+| Issues - Major, Minor e Info | < 5 |
