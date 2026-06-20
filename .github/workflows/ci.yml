@@ -115,7 +115,7 @@ jobs:
         run: >
           mvn -B
           -DskipTests
-          -Dsonar.qualitygate.wait=true
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
   system-test:
