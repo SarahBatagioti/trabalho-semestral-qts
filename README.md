@@ -304,6 +304,10 @@ No último stage, a pipeline executa exclusivamente os testes automatizados de s
 
 **Observação importante:** A pipeline passa a refletir fielmente as regras do `Quality Gate` do SonarCloud. Sendo assim, caso a cobertura de branches permaneça abaixo de `100%`, o job `static-analysis` falhará de forma correta e esperada, evidenciando que a infraestrutura de integração contínua está pronta e operacional, enquanto o critério acadêmico aguarda a completa cobertura do gap restante nos testes.
 
+<p align="center">
+	<img src="assets/Objetivo 5/Portão de Qualidade.png" alt="Portão de Qualidade" />
+</p>
+
 ---
 
 ## Quality Gate Esperado
