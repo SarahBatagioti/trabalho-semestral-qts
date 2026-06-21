@@ -125,11 +125,16 @@ class AvaliacaoServiceAuthorizationTest {
     void shouldEvaluatePodeAvaliarBranchesDirectly() {
         Funcionario gestor = TestDataFactory.funcionario(1, "Gestor", 2, 10);
         Funcionario admin = TestDataFactory.funcionario(2, "Admin", 1, 10);
+        Funcionario adminSemArea = TestDataFactory.funcionario(8, "Admin sem area", 1, null);
+        Funcionario user = TestDataFactory.funcionario(9, "User", 3, 10);
         Funcionario alvoColaboradorMesmoSetor = TestDataFactory.funcionario(3, "Colab", 3, 10);
         Funcionario alvoColaboradorOutroSetor = TestDataFactory.funcionario(4, "Outro Setor", 3, 20);
         Funcionario alvoGestorMesmoSetor = TestDataFactory.funcionario(5, "Gestor 2", 2, 10);
         Funcionario alvoAdminMesmoSetor = TestDataFactory.funcionario(6, "Admin 2", 1, 10);
         Funcionario alvoSemArea = TestDataFactory.funcionario(7, "Sem Area", 3, null);
+        Funcionario alvoSemPerfil = TestDataFactory.funcionario(10, "Sem Perfil", 3, 10);
+        Funcionario alvoMesmoUsuario = TestDataFactory.funcionario(9, "User", 3, 10);
+        alvoSemPerfil.setPerfil(null);
 
         assertThat((Boolean) ReflectionTestUtils.invokeMethod(avaliacaoService, "podeAvaliar", new br.com.AllTallent.config.CustomUserDetails(gestor), alvoColaboradorMesmoSetor))
                 .isEqualTo(true);
@@ -137,9 +142,21 @@ class AvaliacaoServiceAuthorizationTest {
                 .isEqualTo(false);
         assertThat((Boolean) ReflectionTestUtils.invokeMethod(avaliacaoService, "podeAvaliar", new br.com.AllTallent.config.CustomUserDetails(admin), alvoGestorMesmoSetor))
                 .isEqualTo(true);
+        assertThat((Boolean) ReflectionTestUtils.invokeMethod(avaliacaoService, "podeAvaliar", new br.com.AllTallent.config.CustomUserDetails(admin), alvoColaboradorMesmoSetor))
+                .isEqualTo(true);
+        assertThat((Boolean) ReflectionTestUtils.invokeMethod(avaliacaoService, "podeAvaliar", new br.com.AllTallent.config.CustomUserDetails(admin), alvoColaboradorOutroSetor))
+                .isEqualTo(false);
         assertThat((Boolean) ReflectionTestUtils.invokeMethod(avaliacaoService, "podeAvaliar", new br.com.AllTallent.config.CustomUserDetails(admin), alvoAdminMesmoSetor))
                 .isEqualTo(false);
         assertThat((Boolean) ReflectionTestUtils.invokeMethod(avaliacaoService, "podeAvaliar", new br.com.AllTallent.config.CustomUserDetails(admin), alvoSemArea))
+                .isEqualTo(false);
+        assertThat((Boolean) ReflectionTestUtils.invokeMethod(avaliacaoService, "podeAvaliar", new br.com.AllTallent.config.CustomUserDetails(admin), alvoSemPerfil))
+                .isEqualTo(false);
+        assertThat((Boolean) ReflectionTestUtils.invokeMethod(avaliacaoService, "podeAvaliar", new br.com.AllTallent.config.CustomUserDetails(adminSemArea), alvoColaboradorMesmoSetor))
+                .isEqualTo(false);
+        assertThat((Boolean) ReflectionTestUtils.invokeMethod(avaliacaoService, "podeAvaliar", new br.com.AllTallent.config.CustomUserDetails(user), alvoMesmoUsuario))
+                .isEqualTo(false);
+        assertThat((Boolean) ReflectionTestUtils.invokeMethod(avaliacaoService, "podeAvaliar", new br.com.AllTallent.config.CustomUserDetails(user), alvoColaboradorMesmoSetor))
                 .isEqualTo(false);
     }
 

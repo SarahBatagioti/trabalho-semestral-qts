@@ -164,6 +164,15 @@ class PerguntaServiceTest {
     }
 
     @Test
+    void shouldFailToFindMissingQuestion() {
+        when(perguntaRepository.findById(77L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> perguntaService.buscarPorId(77L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Pergunta");
+    }
+
+    @Test
     void shouldFailToDeleteMissingQuestion() {
         when(perguntaRepository.existsById(99L)).thenReturn(false);
 

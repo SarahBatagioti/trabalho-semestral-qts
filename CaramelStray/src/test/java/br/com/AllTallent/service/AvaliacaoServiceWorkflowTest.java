@@ -302,6 +302,11 @@ class AvaliacaoServiceWorkflowTest {
                 new RevisaoSupervisorRequestDTO("ok", "feedback", "APROVADO")))
                 .isInstanceOf(UnauthorizedActionException.class);
 
+        when(avaliacaoFuncionarioRepository.findById(999L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> avaliacaoService.salvarRevisaoSupervisor(999L,
+                new RevisaoSupervisorRequestDTO("ok", "feedback", "APROVADO")))
+                .isInstanceOf(EntityNotFoundException.class);
+
         authenticateAs(colaborador);
         when(avaliacaoFuncionarioRepository.findById(21L)).thenReturn(Optional.of(instanciaColaborador));
         instanciaColaborador.setResultadoStatus("CONCLUIDO");
@@ -358,6 +363,10 @@ class AvaliacaoServiceWorkflowTest {
 
         when(avaliacaoFuncionarioRepository.findById(22L)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> avaliacaoService.buscarParaRevisao(22L))
+                .isInstanceOf(EntityNotFoundException.class);
+
+        when(avaliacaoFuncionarioRepository.findById(24L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> avaliacaoService.buscarParaResponder(24L))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 

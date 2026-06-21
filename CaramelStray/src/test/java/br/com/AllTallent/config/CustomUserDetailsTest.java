@@ -42,6 +42,7 @@ class CustomUserDetailsTest {
         CustomUserDetails details = new CustomUserDetails(TestDataFactory.funcionario(3, "Caio", 3, 30));
 
         assertThat(details.getAuthorities()).extracting("authority").containsExactly("ROLE_USER");
+        assertThat(details.getPassword()).isEqualTo("encoded-password");
         assertThat(details.isAccountNonExpired()).isTrue();
         assertThat(details.isAccountNonLocked()).isTrue();
         assertThat(details.isCredentialsNonExpired()).isTrue();

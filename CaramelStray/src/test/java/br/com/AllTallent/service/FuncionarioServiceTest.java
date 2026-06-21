@@ -143,6 +143,35 @@ class FuncionarioServiceTest {
     }
 
     @Test
+    void shouldFailWhenPerfilOrGestorAreMissingAndWhenUpdatingUnknownExperience() {
+        Funcionario funcionario = TestDataFactory.funcionario(1, "Ana", 3, 10);
+        FuncionarioRequestDTO missingPerfil = new FuncionarioRequestDTO(
+                "Novo Nome", "novo@mail.com", "111", "119", "", 10, 3, null, null, null, null);
+        FuncionarioRequestDTO missingGestor = new FuncionarioRequestDTO(
+                "Novo Nome", "novo@mail.com", "111", "119", "", 10, 3, 99, null, null, null);
+        when(funcionarioRepository.findById(1)).thenReturn(Optional.of(funcionario));
+        when(areaRepository.findById(10)).thenReturn(Optional.of(TestDataFactory.area(10, "Tech")));
+        when(perfilRepository.findById(3)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> funcionarioService.atualizar(1, missingPerfil))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Perfil");
+
+        when(perfilRepository.findById(3)).thenReturn(Optional.of(TestDataFactory.perfil(3, "Colaborador")));
+        when(funcionarioRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> funcionarioService.atualizar(1, missingGestor))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Gestor");
+
+        when(experienciaRepository.findById(404)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> funcionarioService.atualizarExperiencia(404,
+                new ExperienciaRequestDTO("Lead", "Nova", LocalDate.now(), LocalDate.now(), "Desc")))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Experi");
+    }
+
+    @Test
     void shouldExposePerfilCompletoAndExperiencias() {
         Funcionario funcionario = TestDataFactory.funcionario(1, "Ana", 3, 10);
         Experiencia experiencia = TestDataFactory.experiencia(1, funcionario);
@@ -355,6 +384,9 @@ class FuncionarioServiceTest {
                 .isInstanceOf(EntityNotFoundException.class);
         assertThatThrownBy(() -> funcionarioService.adicionarExperiencia(9,
                 new ExperienciaRequestDTO("Dev", "Empresa", LocalDate.now(), LocalDate.now(), "Desc")))
+                .isInstanceOf(ResourceNotFoundException.class);
+        authenticateAs(TestDataFactory.funcionario(1, "Ana", 3, 10));
+        assertThatThrownBy(() -> funcionarioService.associarCompetencias(9, List.of(1)))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 

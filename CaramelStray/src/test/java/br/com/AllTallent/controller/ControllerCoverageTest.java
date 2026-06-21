@@ -124,6 +124,9 @@ class ControllerCoverageTest {
 
         when(authService.register(any(CadastroRequestDTO.class))).thenThrow(new RuntimeException("erro"));
         assertThat(controller.register(TestDataFactory.cadastroRequest()).getStatusCode().value()).isEqualTo(400);
+        when(funcionarioRepository.findByEmail("ana@mail.com")).thenReturn(Optional.empty());
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> controller.login(request))
+                .isInstanceOf(org.springframework.security.core.userdetails.UsernameNotFoundException.class);
     }
 
     @Test
@@ -284,6 +287,8 @@ class ControllerCoverageTest {
         assertThat(controller.criarAvaliacao(new AvaliacaoRequestDTO("Aval", LocalDate.now(), List.of(1), List.of(2L))).getStatusCode().value()).isEqualTo(400);
         when(avaliacaoService.criarAvaliacaoCompleta(any(AvaliacaoRequestDTO.class))).thenThrow(new RuntimeException("erro"));
         assertThat(controller.criarAvaliacao(new AvaliacaoRequestDTO("Aval", LocalDate.now(), List.of(1), List.of(2L))).getStatusCode().value()).isEqualTo(500);
+        when(avaliacaoService.criarAvaliacaoCompleta(any(AvaliacaoRequestDTO.class))).thenThrow(new UnauthorizedActionException("erro"));
+        assertThat(controller.criarAvaliacao(new AvaliacaoRequestDTO("Aval", LocalDate.now(), List.of(1), List.of(2L))).getStatusCode().value()).isEqualTo(403);
 
         assertThat(controller.listarTodasAvaliacoes().getStatusCode().value()).isEqualTo(200);
         assertThat(controller.buscarAvaliacaoDetalhada(1).getStatusCode().value()).isEqualTo(200);
@@ -300,6 +305,8 @@ class ControllerCoverageTest {
         assertThat(controller.salvarResposta(new RespostaColaboradorRequestDTO(1L, 2L, "Texto", null)).getStatusCode().value()).isEqualTo(400);
         when(avaliacaoService.salvarOuAtualizarResposta(any(RespostaColaboradorRequestDTO.class))).thenThrow(new RuntimeException("erro"));
         assertThat(controller.salvarResposta(new RespostaColaboradorRequestDTO(1L, 2L, "Texto", null)).getStatusCode().value()).isEqualTo(500);
+        when(avaliacaoService.salvarOuAtualizarResposta(any(RespostaColaboradorRequestDTO.class))).thenThrow(new UnauthorizedActionException("erro"));
+        assertThat(controller.salvarResposta(new RespostaColaboradorRequestDTO(1L, 2L, "Texto", null)).getStatusCode().value()).isEqualTo(403);
 
         assertThat(controller.buscarRespostasPorInstancia(1L).getStatusCode().value()).isEqualTo(200);
         when(avaliacaoService.buscarRespostasPorInstancia(2L)).thenThrow(new EntityNotFoundException("erro"));
@@ -313,6 +320,8 @@ class ControllerCoverageTest {
         assertThat(controller.salvarRevisaoSupervisor(2L, new RevisaoSupervisorRequestDTO("ok", "fb", "APROVADO")).getStatusCode().value()).isEqualTo(404);
         when(avaliacaoService.salvarRevisaoSupervisor(any(Long.class), any(RevisaoSupervisorRequestDTO.class))).thenThrow(new RuntimeException("erro"));
         assertThat(controller.salvarRevisaoSupervisor(2L, new RevisaoSupervisorRequestDTO("ok", "fb", "APROVADO")).getStatusCode().value()).isEqualTo(500);
+        when(avaliacaoService.salvarRevisaoSupervisor(any(Long.class), any(RevisaoSupervisorRequestDTO.class))).thenThrow(new UnauthorizedActionException("erro"));
+        assertThat(controller.salvarRevisaoSupervisor(2L, new RevisaoSupervisorRequestDTO("ok", "fb", "APROVADO")).getStatusCode().value()).isEqualTo(403);
 
         assertThat(controller.buscarAvaliacoesPendentes(1).getStatusCode().value()).isEqualTo(200);
         assertThat(controller.buscarAvaliacaoParaResponder(1L).getStatusCode().value()).isEqualTo(200);
