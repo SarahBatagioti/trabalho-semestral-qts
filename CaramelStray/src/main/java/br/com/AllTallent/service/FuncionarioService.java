@@ -151,6 +151,7 @@ public class FuncionarioService {
             .map(FuncionarioPerfilDTO::new) 
             .orElseThrow(() -> new ResourceNotFoundException("Funcionário não encontrado com o ID: " + id));
     }
+    @Transactional
     public CertificadoDTO adicionarCertificado(Integer funcionarioId, CertificadoRequestDTO dto) {
         Funcionario funcionario = funcionarioRepository.findById(funcionarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado com o ID: " + funcionarioId));
@@ -164,9 +165,9 @@ public class FuncionarioService {
         }
         funcionario.getCertificados().add(novoCertificado);
 
-        funcionarioRepository.save(funcionario);
+        FuncionarioCertificado certificadoSalvo = certificadoRepository.save(novoCertificado);
 
-        return new CertificadoDTO(novoCertificado);
+        return new CertificadoDTO(certificadoSalvo);
     }
     @Transactional
     public void associarCompetencias( Integer idAlvo, List<Integer> codigosCompetencia) {
@@ -256,9 +257,9 @@ public class FuncionarioService {
         }
         funcionario.getExperiencias().add(novaExperiencia);
 
-        funcionarioRepository.save(funcionario);
+        Experiencia experienciaSalva = experienciaRepository.save(novaExperiencia);
         
-        return new ExperienciaDTO(novaExperiencia);
+        return new ExperienciaDTO(experienciaSalva);
     }
 
     @Transactional

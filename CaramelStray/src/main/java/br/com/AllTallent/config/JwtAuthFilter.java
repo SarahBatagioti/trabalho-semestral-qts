@@ -25,6 +25,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
+    public static final String JWT_AUTHENTICATED_ATTRIBUTE = "jwt.authenticated";
+
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
@@ -62,6 +64,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                    request.setAttribute(JWT_AUTHENTICATED_ATTRIBUTE, Boolean.TRUE);
                 }
             }
             filterChain.doFilter(request, response);

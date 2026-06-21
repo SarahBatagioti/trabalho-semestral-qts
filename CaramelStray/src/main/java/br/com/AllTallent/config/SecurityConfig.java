@@ -46,7 +46,14 @@ public class SecurityConfig {
                 .anyRequest().authenticated() 
             )
             .exceptionHandling(exceptions -> exceptions
-                .authenticationEntryPoint((request, response, ex) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                .authenticationEntryPoint((request, response, ex) -> {
+                    Object jwtAuthenticated = request.getAttribute(JwtAuthFilter.JWT_AUTHENTICATED_ATTRIBUTE);
+                    if (Boolean.TRUE.equals(jwtAuthenticated)) {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                        return;
+                    }
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                })
                 .accessDeniedHandler((request, response, ex) -> response.sendError(HttpServletResponse.SC_FORBIDDEN))
             )
             

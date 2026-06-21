@@ -158,18 +158,34 @@ class FuncionarioServiceTest {
     void shouldManageCertificadosAndExperiencias() {
         Funcionario funcionario = TestDataFactory.funcionario(1, "Ana", 3, 10);
         when(funcionarioRepository.findById(1)).thenReturn(Optional.of(funcionario));
-        when(funcionarioRepository.save(any(Funcionario.class))).thenAnswer(invocation -> invocation.getArgument(0));
         Experiencia experiencia = TestDataFactory.experiencia(1, funcionario);
         when(experienciaRepository.findById(1)).thenReturn(Optional.of(experiencia));
-        when(experienciaRepository.save(any(Experiencia.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(experienciaRepository.save(any(Experiencia.class))).thenAnswer(invocation -> {
+            Experiencia experienciaSalva = invocation.getArgument(0);
+            if (experienciaSalva.getCodigo() == null) {
+                experienciaSalva.setCodigo(99);
+            }
+            return experienciaSalva;
+        });
         FuncionarioCertificado certificado = TestDataFactory.certificado(5, funcionario);
         when(certificadoRepository.findById(5)).thenReturn(Optional.of(certificado));
+        when(certificadoRepository.save(any(FuncionarioCertificado.class))).thenAnswer(invocation -> {
+            FuncionarioCertificado certificadoSalvo = invocation.getArgument(0);
+            if (certificadoSalvo.getCodigo() == null) {
+                certificadoSalvo.setCodigo(55);
+            }
+            return certificadoSalvo;
+        });
         when(certificadoRepository.existsById(5)).thenReturn(true);
 
-        assertThat(funcionarioService.adicionarCertificado(1, new CertificadoRequestDTO("AWS")).nome()).isEqualTo("AWS");
+        assertThat(funcionarioService.adicionarCertificado(1, new CertificadoRequestDTO("AWS")))
+                .extracting("codigo", "nome")
+                .containsExactly(55, "AWS");
         assertThat(funcionarioService.adicionarExperiencia(1,
                 new ExperienciaRequestDTO("Dev", "Empresa", LocalDate.of(2020, 1, 1), LocalDate.of(2021, 1, 1), "Desc"))
-                .empresa()).isEqualTo("Empresa");
+                )
+                .extracting("codigo", "empresa")
+                .containsExactly(99, "Empresa");
         assertThat(funcionarioService.atualizarExperiencia(1,
                 new ExperienciaRequestDTO("Lead", "Nova", LocalDate.of(2022, 1, 1), LocalDate.of(2023, 1, 1), "Nova desc"))
                 .cargo()).isEqualTo("Lead");
@@ -185,7 +201,16 @@ class FuncionarioServiceTest {
         funcionario.setCertificados(null);
         funcionario.setExperiencias(null);
         when(funcionarioRepository.findById(1)).thenReturn(Optional.of(funcionario));
-        when(funcionarioRepository.save(any(Funcionario.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(certificadoRepository.save(any(FuncionarioCertificado.class))).thenAnswer(invocation -> {
+            FuncionarioCertificado certificadoSalvo = invocation.getArgument(0);
+            certificadoSalvo.setCodigo(10);
+            return certificadoSalvo;
+        });
+        when(experienciaRepository.save(any(Experiencia.class))).thenAnswer(invocation -> {
+            Experiencia experienciaSalva = invocation.getArgument(0);
+            experienciaSalva.setCodigo(20);
+            return experienciaSalva;
+        });
 
         assertThat(funcionarioService.adicionarCertificado(1, new CertificadoRequestDTO("AWS")).nome()).isEqualTo("AWS");
         assertThat(funcionarioService.adicionarExperiencia(1,

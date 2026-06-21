@@ -6,6 +6,17 @@ Este documento organiza a entrega do projeto conforme os requisitos descritos na
 
 O projeto base adotado para a atividade deriva do back-end contido em `CaramelStray`, mantendo a stack e a estrutura original exigidas no enunciado.
 
+### Sumário
+
+* [1. Análise Estática no SonarCloud](#1-análise-estática-no-sonarcloud)
+* [2. Estratégia Evolutiva para Atender ao Quality Gate](#2-estratégia-evolutiva-para-atender-ao-quality-gate)
+* [3. Testes de Unidade](#3-testes-de-unidade)
+* [4. Testes de Sistema (E2E) para as REST APIs](#4-testes-de-sistema-e2e-para-as-rest-apis)
+* [5. Pipeline de CI](#5-pipeline-de-ci)
+* [Quality Gate Esperado](#quality-gate-esperado)
+
+---
+
 ---
 
 ## 1. Análise Estática no SonarCloud
@@ -18,19 +29,37 @@ Processar a análise estática do projeto na ferramenta SonarCloud, registrando 
 
 No resultado inicial, o projeto ainda aparece com `Quality Gate: Not computed`, indicando que a análise foi registrada, mas que os critérios consolidados do portão de qualidade ainda não haviam sido completamente avaliados na execução observada. Em relação às métricas gerais, foram identificados `154 issues abertas`, `5,4% de cobertura de código` e `0,0% de duplicação`.
 
-Na visão por atributos de qualidade, o projeto apresentou:
+<details>
+<summary><b>1. Visão por Atributos de Qualidade</b></summary>
+<p>
+
+O projeto apresentou a seguinte classificação inicial:
 - `Security Rating: D`, com `9 security issues` abertas;
 - `Reliability Rating: B`, com `8 reliability issues` abertas;
 - `Maintainability Rating: A`, com `144 maintainability issues` abertas;
 - `Security Hotspots: 0`, com `Security Review Rating: A`.
 
-Na visão arquitetural, a ferramenta apontou indícios de problemas estruturais que também devem ser considerados na evolução do projeto:
+</p>
+</details>
+
+<details>
+<summary><b>2. Análise Arquitetural</b></summary>
+<p>
+
+A ferramenta apontou indícios de problemas estruturais que também devem ser considerados na evolução do projeto:
 - `2 tangles`;
 - `1 oversized component`;
 - `7 split responsibilities`;
-- arquitetura pretendida ainda não definida no dashboard.
+- Arquitetura pretendida ainda não definida no dashboard.
 
-Na listagem de issues, os apontamentos iniciais ficaram distribuídos em:
+</p>
+</details>
+
+<details>
+<summary><b>3. Distribuição de Issues por Tipo e Severidade</b></summary>
+<p>
+
+Na listagem de issues, os apontamentos iniciais ficaram distribuídos por tipo:
 - `1 bug`;
 - `9 vulnerabilities`;
 - `144 code smells`.
@@ -42,15 +71,27 @@ Quanto à severidade, os registros exibidos no dashboard foram:
 - `95 minor`;
 - `5 info`.
 
-Esses resultados mostram que o projeto já possui uma base funcional, mas ainda está distante dos critérios definidos no item 6 da atividade, principalmente em cobertura de testes e quantidade de issues abertas. Assim, este diagnóstico inicial servirá como marco comparativo para medir a evolução obtida com a implementação dos testes de unidade, testes de sistema, correções de código e integração contínua.
+</p>
+</details>
 
-Evidências utilizadas nesta etapa:
+<details>
+<summary><b>4. Evidências Utilizadas nesta Etapa</b></summary>
+<p>
+
+Os dados mapeados foram extraídos diretamente das seguintes seções:
 - Dashboard `Overview` do SonarQube Cloud;
-- painel `Summary`;
-- listagem de `Issues`;
-- painel `Architecture`.
+- Painel `Summary`;
+- Listagem de `Issues`;
+- Painel `Architecture`.
 
-Pode verificar sobre o resultados em [Evidências do Objetivo 1](./assets/Objetivo%201/)
+Você pode conferir os resultados detalhados em [Evidências do Objetivo 1](./assets/Objetivo%201/).
+
+</p>
+</details>
+
+<br>
+
+Esses resultados mostram que o projeto já possui uma base funcional, mas ainda está distante dos critérios definidos na atividade, principalmente em cobertura de testes e quantidade de issues abertas. Assim, este diagnóstico inicial servirá como marco comparativo para medir a evolução obtida com a implementação dos testes de unidade, testes de sistema, correções de código e integração contínua.
 
 ---
 
@@ -260,8 +301,6 @@ No último stage, a pipeline executa exclusivamente os testes automatizados de s
 </details>
 
 <br>
-
-As capturas de tela solicitadas para a apresentação do projeto estão armazenadas e estruturadas em [assets/Objetivo 5/README.md](./assets/Objetivo%205/README.md), que documenta formalmente os arquivos esperados para esta entrega.
 
 **Observação importante:** A pipeline passa a refletir fielmente as regras do `Quality Gate` do SonarCloud. Sendo assim, caso a cobertura de branches permaneça abaixo de `100%`, o job `static-analysis` falhará de forma correta e esperada, evidenciando que a infraestrutura de integração contínua está pronta e operacional, enquanto o critério acadêmico aguarda a completa cobertura do gap restante nos testes.
 
