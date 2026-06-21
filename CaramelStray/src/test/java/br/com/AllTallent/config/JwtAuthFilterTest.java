@@ -80,6 +80,7 @@ class JwtAuthFilterTest {
 
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
         assertThat(SecurityContextHolder.getContext().getAuthentication().getName()).isEqualTo("ana@mail.com");
+        assertThat(request.getAttribute(JwtAuthFilter.JWT_AUTHENTICATED_ATTRIBUTE)).isEqualTo(Boolean.TRUE);
         verify(filterChain).doFilter(request, response);
     }
 
